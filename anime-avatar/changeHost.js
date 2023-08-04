@@ -5,7 +5,7 @@ const filePath = path.resolve(__dirname, "output.json");
 const fileContent = fs.readFileSync(filePath, "utf8");
 const obj = JSON.parse(fileContent);
 
-const HOST = "https://raw.githubusercontent.com/Kaysil/tad-assets/master/high/"
+const HOST = "https://raw.githubusercontent.com/Kaysil/tad-assets/main/anime-avatar/high/"
 
 let mapped = obj.map(el => {
 	return {
