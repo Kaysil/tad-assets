@@ -4,7 +4,7 @@ const path = require("path");
 const filePath = path.resolve(__dirname, "output.json");
 const fileContent = fs.readFileSync(filePath, "utf8");
 
-const outDir = path.resolve(__dirname, "outHigh");
+const outDir = path.resolve(__dirname, "high");
 const resolution = "s0";
 
 function timeout(ms) {
@@ -12,7 +12,7 @@ function timeout(ms) {
 		setTimeout(() => {
 			reject(new Error("Request timeout"));
 		}, ms);
-	})
+	});
 }
 
 async function fetchWithTimeout(url, ms) {
@@ -39,20 +39,24 @@ async function fetchImage(url, retryTimes = 0) {
 }
 
 async function main() {
-	if (!fs.existsSync(outDir)) fs.mkdirSync(outDir)
+	if (!fs.existsSync(outDir)) fs.mkdirSync(outDir);
 
 	for (let n of JSON.parse(fileContent)) {
 		try {
-			let { name, dupeName, link, _id } = n;
+			let { _id, name, dupe_name, image_original_url } = n;
 			console.log(`Now processing row ${_id}...`);
 
-			let buffer = await fetchImage(link.replace(/\/h\d+\//g, `/${resolution}/`));
-			fs.writeFileSync(path.resolve(outDir, `${dupeName ?? name}.png`), buffer);
+			let buffer = await fetchImage(
+				image_original_url.replace(/\/h\d+\//g, `/${resolution}/`)
+			);
+			fs.writeFileSync(
+				path.resolve(outDir, `${dupe_name ?? name}.png`),
+				buffer
+			);
 		} catch (ex) {
 			console.log(ex);
 		}
 	}
 }
 
-
-main()
+main();

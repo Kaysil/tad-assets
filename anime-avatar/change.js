@@ -3,13 +3,14 @@ const path = require("path");
 
 const filePath = path.resolve(__dirname, "input.json");
 const fileContent = fs.readFileSync(filePath, "utf8");
-
+const HOST =
+	"https://raw.githubusercontent.com/Kaysil/tad-assets/main/anime-avatar/high/";
 /**
  * @type {{rows: {c: {v: string}[]}[]}}
  */
 const data = JSON.parse(fileContent);
-const names = new Map()
-
+const names = {};
+console.log(`Total rows: ${data.rows.length}`)
 let formattedData = data.rows.map((row, i) => {
 	console.log(`Now processing row ${i + 1}...`);
 	let cell = row.c;
@@ -23,22 +24,22 @@ let formattedData = data.rows.map((row, i) => {
 		.replace(/.png/g, "")
 		.toLowerCase();
 
-	if (names.has(name)) {
-		const count = names.get(name);
-		dupeName = `${name}-${count}`;
+	if (names[name] === undefined) {
+		names[name] = 0;
 	} else {
-		names.set(name, 1);
+		dupeName = `${name}-${++names[name]}`;
 	}
 
 	return {
 		_id: i,
 		name,
-		dupeName: dupeName ?? null,
-		link: link?.v,
-		color: color?.v,
+		dupe_name: dupeName ?? null,
+		image_url: `${HOST}${dupeName ?? name}.png`,
+		image_original_url: link?.v,
+		primary_color: color?.v,
 		category: category?.v ?? "",
-		marginLeft: marginLeft?.v ?? 0,
-		maskHeight: maskHeight?.v ?? 0,
+		margin_left: marginLeft?.v ?? 0,
+		mask_height: maskHeight?.v ?? 0,
 	};
 });
 
